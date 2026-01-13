@@ -320,6 +320,177 @@ for p in people:
 
 exit()
 ```
+## Superuser & Local User Setup (SQLite)
+
+To verify or create a superuser, access the Django admin panel, manage users, and inspect JWT tokens (Outstanding & Blacklisted).
+
+1. Check If a Superuser Exists
+
+    Run the Django shell:
+      ```bash
+      python manage.py shell
+      ```
+
+    Then execute:
+
+        from django.contrib.auth.models import User
+
+        # List all superusers
+        superusers = User.objects.filter(is_superuser=True)
+
+        if superusers.exists():
+            for user in superusers:
+                print(f"Superuser found: {user.username}")
+        else:
+            print("No superuser exists")
+
+
+    Exit the shell:
+      ```bash
+        exit()
+      ```
+
+  2. Create a Superuser (If None Exists)
+
+    If no superuser exists, create one using:
+
+    python manage.py createsuperuser
+
+
+    You will be prompted for:
+
+    Username
+
+    Email address
+
+    Password
+
+    Example:
+
+    Username: admin@example.com
+    Password:
+    Password (again):
+    Superuser created successfully.
+
+    This superuser has full system access.
+
+  3. Access Django Admin Panel
+
+      Start the server:
+
+      python manage.py runserver
+
+      Open your browser and go to:
+
+      "http://127.0.0.1:8000/admin/"
+
+
+      Login using:
+
+        Superuser username
+        
+        Superuser password
+
+  4. Manage Users via Django Admin (Username & Password)
+
+      In the Django Admin panel:
+
+        Go to Authentication and Authorization
+
+        Click Users
+
+        Click Add User
+
+      You will:
+
+        Set Username
+
+        Set Password
+
+        Save the user
+
+      After saving, you can:
+
+        Add First name / Last name / Email
+
+        Assign the user to a Group (HR_ReadOnly, HR_ReadWrite, HR_FullAccess)
+
+        Enable or disable the account
+
+  ⚠️ Only superusers should create users.
+  HR staff should not create users directly.
+
+  5. View Outstanding & Blacklisted JWT Tokens
+
+      If djangorestframework-simplejwt with token blacklisting is enabled, Django Admin will show token tables.
+
+      In Admin panel:
+
+      Go to:
+
+        Admin → Token Blacklist
+
+      You will see:
+
+        Outstanding Tokens
+
+        Blacklisted Tokens
+
+        Outstanding Tokens
+
+        Shows all issued refresh tokens
+
+        Includes user, creation time, expiration
+
+        Blacklisted Tokens
+
+        Shows tokens that were explicitly revoked (logout)
+
+        This helps admins:
+
+        Audit sessions
+
+        Force logout users
+
+        Investigate security issues
+
+  6. Reset a User’s Password (Admin)
+
+      From Admin → Users:
+
+        Click a user
+
+        Click Change password
+
+        Set a new password
+
+        Save
+
+      This is useful if a user:
+
+        Forgot their password
+
+        Is locked out
+
+        Needs credentials reset
+
+  7. **Notes** for SQLite Users
+
+      If you are using SQLite (db.sqlite3):
+
+        All users, roles, and tokens are stored locally
+
+        No additional configuration is required
+
+        Admin works exactly the same as PostgreSQL
+
+      To confirm SQLite is being used:
+
+        python manage.py shell
+
+        from django.conf import settings
+        print(settings.DATABASES)
+
 
 ## Authentication & User Management
 
