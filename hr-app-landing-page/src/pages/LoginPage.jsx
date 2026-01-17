@@ -36,7 +36,10 @@ function LoginPage({ onLoginSuccess }) {
         refresh: res.data.refresh,
       });
 
+      setTimeout(() => {
       navigate("/dashboard");
+      }, 0);
+
     } catch (err) {
       alert("Invalid credentials");
     }
