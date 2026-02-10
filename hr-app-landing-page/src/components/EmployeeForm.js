@@ -167,9 +167,9 @@ function EmployeeForm({ onAddEmployee }) {
           <label className="ae-label">Email Address *</label>
           <input
             name="personal_email"
-            type="email"
-            required
+            type="email" required
             placeholder="name@example.com"
+            title="Please enter a valid email address"
           />
         </div>
         <div className="ae-field">
@@ -276,6 +276,7 @@ function EmployeeForm({ onAddEmployee }) {
             <option value="CST">CST (US Central)</option>
             <option value="MST">MST (US Mountain)</option>
             <option value="PST">PST (US Pacific)</option>
+            <option value="HST">HST (Hawaii)</option>
             <option value="UTC">UTC</option>
           </select>
         </div>
@@ -296,7 +297,10 @@ function EmployeeForm({ onAddEmployee }) {
 
         <div className="ae-field ae-span-2">
           <label className="ae-label">ACDC Email</label>
-          <input name="acdc_email" placeholder="user@acdc.com" />
+          <input name="acdc_email" 
+          type="email" required 
+          placeholder="user@acdc.com"
+          title="Please enter a valid ACDC email address"/>
         </div>
 
         <div className="ae-field ae-span-2">
