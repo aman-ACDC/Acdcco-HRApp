@@ -5,6 +5,7 @@ from .models import Person
 class PersonAdmin(admin.ModelAdmin):
     list_display = [
         'full_name',
+        'member_type',
         'department',
         'position',
         'status',
@@ -34,6 +35,7 @@ class PersonAdmin(admin.ModelAdmin):
         }),
         ('Employment Details', {
             'fields': (
+                'member_type',
                 'department',
                 'subteam',
                 'position',
