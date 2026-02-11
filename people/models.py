@@ -199,6 +199,12 @@ POSITION_CHOICES = [
     ("Director", "Director"),
 ]
 
+MEMBER_TYPE_CHOICES = [
+    ("employee", "Employee"),
+    ("volunteer", "Volunteer"),
+]
+
+
 # Updated to match PostgreSQL enum exactly
 STATUS_CHOICES = [
     ("active", "Active"),
@@ -230,7 +236,14 @@ class Person(models.Model):
         help_text="Personal email address"
     )
     phone = models.TextField(blank=True, null=True)  # Changed to TextField to match PostgreSQL
-
+    
+    member_type = models.CharField(
+        max_length=20,
+        choices=MEMBER_TYPE_CHOICES,
+        default="employee",
+        help_text="Whether this person is an employee or a volunteer"
+    )
+    
     # -- Employment --
     # Department is required in PostgreSQL (NOT NULL)
     department = models.TextField(
