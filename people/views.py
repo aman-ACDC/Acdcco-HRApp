@@ -54,7 +54,7 @@ class PersonViewSet(viewsets.ModelViewSet):
         
         # READ operations - Any HR role can view
         if self.action in ['list', 'retrieve', 'by_department']:
-            permission_classes = [IsReadOnlyOrAbove]
+            permission_classes = [IsAuthenticated]
         
         # WRITE operations - ReadWrite and FullAccess can create/update
         elif self.action in ['create', 'update', 'partial_update', 'update_by_identifier']:

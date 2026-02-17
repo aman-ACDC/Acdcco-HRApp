@@ -170,7 +170,7 @@ DATABASES = {
 }
 '''
 
-''' To test with sqlite
+''' To test with sqlite 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
