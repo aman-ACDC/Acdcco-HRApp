@@ -56,3 +56,18 @@ yarn-error.log*
 build/
 dist/
 .cache/
+
+# ---------------- Extra safety (recommended) ----------------
+
+# Pipenv
+pipenv-*.log
+
+# Coverage / tooling
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Frontend env files
+hr-app-landing-page/.env
+hr-app-landing-page/.env.*
