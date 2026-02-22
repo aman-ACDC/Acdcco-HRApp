@@ -188,7 +188,7 @@ DATABASES = {
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='5432'),
         'OPTIONS': {
-            'sslmode': 'require',  # Supabase requires SSL
+            'sslmode': config('DB_SSLMODE', default='disable'),  # Changed from 'require' for local compatibility
         }
     }
 }
