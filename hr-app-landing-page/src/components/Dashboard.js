@@ -3,6 +3,14 @@ import React, { useState } from 'react';
 const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [filterTitle, setFilterTitle] = useState('All');
+
+  const filteredEmployees = filterTitle === 'All' 
+    ? employees 
+    : employees.filter(emp => emp.title === filterTitle);
+
+  // Get unique titles for the filter dropdown
+  const uniqueTitles = ['All', ...new Set(employees.map(emp => emp.title).filter(Boolean))];
 
   const handleEdit = (employee) => {
     setEditingId(employee.name);
@@ -39,8 +47,20 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
         <div className="section">
           <h2 className="section-title">Employee Dashboard</h2>
           
-          
           <div className="dashboard-table-container">
+            <div className="dashboard-filters">
+              <label className="filter-label">Filter by Title:</label>
+              <select 
+                className="filter-select" 
+                value={filterTitle}
+                onChange={(e) => setFilterTitle(e.target.value)}
+              >
+                {uniqueTitles.map(title => (
+                  <option key={title} value={title}>{title}</option>
+                ))}
+              </select>
+            </div>
+
             <table className="dashboard-table">
               <thead>
                 <tr>
@@ -55,7 +75,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                 </tr>
               </thead>
               <tbody>
-                {employees.map((employee, index) => (
+                {filteredEmployees.map((employee, index) => (
                   <tr key={index} className={editingId === employee.name ? 'editing' : ''}>
                     <td>
                       {editingId === employee.name ? (
