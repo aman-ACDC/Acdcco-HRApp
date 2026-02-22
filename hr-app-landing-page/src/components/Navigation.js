@@ -1,55 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
-const Navigation = ({ currentPage, onPageChange = () => {} }) => {
+const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Zustand global auth state
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
 
   useEffect(() => {
     const handleScroll = () => {
-      const navbar = document.querySelector('.navbar');
+      const navbar = document.querySelector(".navbar");
       if (!navbar) return;
       navbar.style.background =
-        window.scrollY > 50 ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.95)';
+        window.scrollY > 50
+          ? "rgba(255, 255, 255, 0.98)"
+          : "rgba(255, 255, 255, 0.95)";
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (sectionId) => {
-    const tryScroll = (attempt = 0) => {
-      const el = document.getElementById(sectionId);
-      if (el) {
-        const NAV_OFFSET = 88;
-        const y = el.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-        setIsMenuOpen(false);
-      } else if (attempt < 6) {
-        requestAnimationFrame(() => tryScroll(attempt + 1));
-      } else {
-        setIsMenuOpen(false);
-      }
-    };
-    tryScroll();
-  };
-
-  const handlePageChange = (page) => {
-    onPageChange(page);
-    setIsMenuOpen(false);
-
-    if (page === "dashboard") {
-      navigate("/employee-dashboard");
-    } else if (page === "landing" || page === "home") {
-      navigate("/dashboard");
-    }
-  };
-
-  // Logout handler using Zustand
   const handleLogout = async () => {
     await logout();
     setIsMenuOpen(false);
@@ -64,42 +36,31 @@ const Navigation = ({ currentPage, onPageChange = () => {} }) => {
           className="nav-logo"
           onClick={(e) => {
             e.preventDefault();
-            handlePageChange('landing');
+            setIsMenuOpen(false);
+            navigate("/dashboard");
           }}
         >
           ACDC HR
         </a>
 
-        {/* Hamburger toggle */}
-        <div className={`nav-toggle ${isMenuOpen ? "open" : ""}`}
-        onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <div
+          className={`nav-toggle ${isMenuOpen ? "open" : ""}`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
           <span></span>
           <span></span>
           <span></span>
         </div>
 
-        {/* Menu items */}
-        <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+        <ul className={`nav-menu ${isMenuOpen ? "active" : ""}`}>
           <li>
             <a
               href="#"
-              className={`nav-link ${currentPage === 'dashboard' ? 'active' : ''}`}
+              className="nav-link"
               onClick={(e) => {
                 e.preventDefault();
-                handlePageChange('dashboard');
-              }}
-            >
-              Dashboard
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="#"
-              className={`nav-link ${currentPage === 'landing' ? 'active' : ''}`}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageChange('landing');
+                setIsMenuOpen(false);
+                navigate("/dashboard");
               }}
             >
               Home
@@ -112,8 +73,8 @@ const Navigation = ({ currentPage, onPageChange = () => {} }) => {
               className="nav-link"
               onClick={(e) => {
                 e.preventDefault();
-                handlePageChange('landing');
-                scrollToSection('employees');
+                setIsMenuOpen(false);
+                navigate("/employees");
               }}
             >
               Employees
@@ -126,8 +87,8 @@ const Navigation = ({ currentPage, onPageChange = () => {} }) => {
               className="nav-link"
               onClick={(e) => {
                 e.preventDefault();
-                handlePageChange('landing');
-                scrollToSection('add-employee');
+                setIsMenuOpen(false);
+                navigate("/add-employee");
               }}
             >
               Add Employee
@@ -140,13 +101,29 @@ const Navigation = ({ currentPage, onPageChange = () => {} }) => {
               className="nav-link"
               onClick={(e) => {
                 e.preventDefault();
-                handlePageChange('landing');
-                scrollToSection('contact');
+                setIsMenuOpen(false);
+                navigate("/dashboard");
               }}
             >
               Support
             </a>
           </li>
+
+          {isAuthenticated && (
+            <li>
+              <a
+                href="#"
+                className="nav-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsMenuOpen(false);
+                  navigate("/register");
+                }}
+              >
+                Register
+              </a>
+            </li>
+          )}
 
           {isAuthenticated && (
             <li className="logout-item">

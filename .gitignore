@@ -12,6 +12,7 @@ Thumbs.db
 # Editor/IDE files
 .history/
 .vscode/
+.idea/
 *.swp
 *.swo
 
@@ -23,7 +24,9 @@ __pycache__/
 .Python
 venv/
 env/
+.venv/
 .env
+.env.*
 *.egg-info/
 dist/
 build/
@@ -33,33 +36,38 @@ build/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+dev.db
+*.sqlite3
 
-# Cache and temp files
-*_pycache_/
-company_portal/__pycache__/
-hr/__pycache__/
-people/__pycache__/
-
-# Migration files 
-*/migrations/*.py
-!*/migrations/__init__.py
+# Pytest
+.pytest_cache/
 
 # Static files collected by Django
 staticfiles/
 static_root/
 
-# Pytest
-.pytest_cache/
-
-# Environment files with secrets
-.env
-.env.local
-.env.*.local
-
-# local Python venvs
-.venv/
-ACDC-env/
-
-# React deps
+# React / Node
+node_modules/
 hr-app-landing-page/node_modules/
-dev.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+build/
+dist/
+.cache/
+
+# ---------------- Extra safety (recommended) ----------------
+
+# Pipenv
+pipenv-*.log
+
+# Coverage / tooling
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Frontend env files
+hr-app-landing-page/.env
+hr-app-landing-page/.env.*

@@ -38,7 +38,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
       <div className="container">
         <div className="section">
           <h2 className="section-title">Employee Dashboard</h2>
-          <p className="section-subtitle">Manage and edit employee information</p>
+          
           
           <div className="dashboard-table-container">
             <table className="dashboard-table">
