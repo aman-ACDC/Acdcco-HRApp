@@ -365,7 +365,7 @@ const INITIAL_DEPARTMENTS = [
   "Finance",
 ];
 
-const POSITION_CHOICES = ["Volunteer", "Manager", "Asst. Director", "Director"];
+const POSITION_CHOICES = ["Volunteer", "Employee", "Manager", "Asst. Director", "Director"];
 const REPORTS_TO_CHOICES = ["Asst. Director", "Director", "Jenny"];
 const ADD_NEW_DEPT_VALUE = "__ADD_NEW_DEPARTMENT__";
 

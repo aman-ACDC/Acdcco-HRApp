@@ -195,6 +195,8 @@ DEPARTMENT_CHOICES = [
 
 POSITION_CHOICES = [
     ("Volunteer", "Volunteer"),
+    ("Employee", "Employee"),
+    ("Manager", "Manager"),
     ("Asst. Director", "Asst. Director"),
     ("Director", "Director"),
 ]
