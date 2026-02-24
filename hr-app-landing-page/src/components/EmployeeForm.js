@@ -568,10 +568,7 @@ function EmployeeForm({ onAddEmployee }) {
       id="add-employee"
       style={{ paddingTop: "120px" }}
     >
-      <h1
-        className="add-employee-title"
-        style={{ color: "#111", marginBottom: "18px" }}
-      >
+      <h1 className="add-employee-title">
         Add New Employee
       </h1>
 
@@ -748,7 +745,7 @@ function EmployeeForm({ onAddEmployee }) {
         {/* Submit */}
 
         <div className="ae-actions ae-span-2">
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="ae-submit" disabled={loading}>
             {loading ? "Adding..." : "Add Employee"}
           </button>
         </div>
