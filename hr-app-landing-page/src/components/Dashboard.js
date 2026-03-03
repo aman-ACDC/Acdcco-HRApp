@@ -68,7 +68,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                   <th>Title</th>
                   <th>Department</th>
                   <th>Location</th>
-                  <th>Status</th>
+                  {/* <th>Status</th> */}
                   <th>Start Date</th>
                   <th>Reports To</th>
                   <th>Actions</th>
@@ -136,7 +136,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                         <span className="location-badge">{employee.location}</span>
                       )}
                     </td>
-                    <td>
+                                        {/* <td>
                       {editingId === employee.name ? (
                         <select
                           value={editForm.status || ''}
@@ -151,7 +151,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                           {employee.status}
                         </span>
                       )}
-                    </td>
+                    </td> */}
                     <td>
                       {editingId === employee.name ? (
                         <input
