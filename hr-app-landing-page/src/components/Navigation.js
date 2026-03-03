@@ -23,9 +23,11 @@ const Navigation = () => {
   }, []);
 
   const handleLogout = async () => {
-    await logout();
-    setIsMenuOpen(false);
-    navigate("/");
+    if (window.confirm("Are you sure you want to logout?")) {
+      await logout();
+      setIsMenuOpen(false);
+      navigate("/");
+    }
   };
 
   return (

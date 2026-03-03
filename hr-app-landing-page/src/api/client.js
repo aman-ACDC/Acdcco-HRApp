@@ -1,13 +1,8 @@
 // hr-app-landing-page/src/api/client.js
-import axios from "axios";
+import baseClient from "./baseClient";
 import { useAuthStore } from "../store/authStore"; 
 
-const base = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000";
-
-const client = axios.create({
-  baseURL: `${base}/api`,
-  timeout: 15000,
-});
+const client = baseClient;
 
 // ADDED: Request interceptor to attach JWT token
 client.interceptors.request.use((config) => {
@@ -18,12 +13,37 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
+// Robust response interceptor for token refresh
 client.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    const msg = err.response?.data?.detail || err.message;
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // If error is 401 Unauthorized and we haven't tried to refresh yet
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // Don't retry for login or refresh endpoints to avoid infinite loops
+      const url = originalRequest.url;
+      if (url.includes("/token/") || url.includes("/register/")) {
+        return Promise.reject(error);
+      }
+
+      originalRequest._retry = true;
+      
+      try {
+        const newAccessToken = await useAuthStore.getState().refreshAccessToken();
+        if (newAccessToken) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return client(originalRequest);
+        }
+      } catch (refreshError) {
+        console.error("Critical refresh error:", refreshError);
+        useAuthStore.getState().logout();
+      }
+    }
+    
+    const msg = error.response?.data?.detail || error.message;
     console.error("[API error]", msg);
-    return Promise.reject(err);
+    return Promise.reject(error);
   }
 );
 

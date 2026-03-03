@@ -200,6 +200,7 @@ import "./App.css";
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const logout = useAuthStore((state) => state.logout);
   const [employees, setEmployees] = useState([]);
   const [lastSynced, setLastSynced] = useState(null);
@@ -208,7 +209,13 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated) return;
+    // Wait for store to hydrate and check if authenticated
+    if (!hasHydrated) return;
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
+
     let isMounted = true;
 
     const fetchEmployees = async () => {
