@@ -365,7 +365,8 @@ const INITIAL_DEPARTMENTS = [
   "Finance",
 ];
 
-const POSITION_CHOICES = ["Volunteer", "Employee", "Manager", "Asst. Director", "Director"];
+const POSITION_CHOICES = ["Manager", "Asst. Director", "Director"];
+const MEMBER_TYPE_CHOICES = ["Employee", "Volunteer"];
 const REPORTS_TO_CHOICES = ["Asst. Director", "Director", "Jenny"];
 const ADD_NEW_DEPT_VALUE = "__ADD_NEW_DEPARTMENT__";
 
@@ -377,6 +378,7 @@ function EmployeeForm({ onAddEmployee }) {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [showNewDeptInput, setShowNewDeptInput] = useState(false);
   const [newDeptName, setNewDeptName] = useState("");
+  const [memberType, setMemberType] = useState("");
 
   // Token from Zustand
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -457,14 +459,11 @@ function EmployeeForm({ onAddEmployee }) {
 
       const startDate = fd.get("start_date");
 
-      /* ---------- Position ---------- */
+      /* ---------- Position & Member Type ---------- */
 
       const position = (fd.get("position") || "").trim();
 
-      const memberType =
-        position.toLowerCase() === "volunteer"
-          ? "volunteer"
-          : "employee";
+      const memberTypeSubmit = (fd.get("member_type") || "employee").toLowerCase();
 
       /* ---------- Payload (Backend Format) ---------- */
 
@@ -492,7 +491,7 @@ function EmployeeForm({ onAddEmployee }) {
         time_commitment: Number(fd.get("time_commitment") || 0),
 
         status: "active",
-        member_type: memberType,
+        member_type: memberTypeSubmit,
       };
 
       /* ---------- API ---------- */
@@ -533,6 +532,7 @@ function EmployeeForm({ onAddEmployee }) {
       setSelectedDepartment("");
       setShowNewDeptInput(false);
       setNewDeptName("");
+      setMemberType("");
 
       setMessage("✅ Employee added successfully");
     } catch (err) {
@@ -600,11 +600,38 @@ function EmployeeForm({ onAddEmployee }) {
           <input name="phone" />
         </div>
 
+        {/* Member Type */}
+
+        <div className="ae-field">
+          <label>Member Type *</label>
+
+          <select
+            name="member_type"
+            required
+            value={memberType}
+            onChange={(e) => setMemberType(e.target.value)}
+          >
+            <option value="" disabled>
+              Select
+            </option>
+
+            {MEMBER_TYPE_CHOICES.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* ID */}
 
         <div className="ae-field">
-          <label>Employee ID *</label>
-          <input name="subteam" required />
+          <label>Employee ID {memberType !== "Volunteer" ? "*" : ""}</label>
+          <input
+            name="subteam"
+            required={memberType !== "Volunteer"}
+            disabled={memberType === "Volunteer"}
+          />
         </div>
 
         {/* Date */}
