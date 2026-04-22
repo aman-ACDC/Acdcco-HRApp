@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import client from "../api/client";
+import baseClient from "../api/baseClient";
 
 export const useAuthStore = create(
   persist(
@@ -8,9 +8,10 @@ export const useAuthStore = create(
       isAuthenticated: false,
       accessToken: null,
       refreshToken: null,
+      isRefreshing: false,
+      hasHydrated: false,
 
-      setAccessToken: (token) => set({ accessToken: token }),
-      setRefreshToken: (token) => set({ refreshToken: token }),
+      setHasHydrated: (state) => set({ hasHydrated: state }),
 
       // LOGIN — Save Tokens in Store
       login: ({ access, refresh }) =>
@@ -26,7 +27,7 @@ export const useAuthStore = create(
 
         try {
           if (refresh) {
-            await client.post("/token/blacklist/", { refresh });
+            await baseClient.post("/token/blacklist/", { refresh });
           }
         } catch (err) {
           console.error("Blacklist failed:", err);
@@ -43,22 +44,30 @@ export const useAuthStore = create(
       refreshAccessToken: async () => {
         const refresh = get().refreshToken;
 
-        if (!refresh) return null;
+        if (!refresh || get().isRefreshing) return null;
+
+        set({ isRefreshing: true });
 
         try {
-          const res = await client.post("/token/refresh/", { refresh });
+          const res = await baseClient.post("/token/refresh/", { refresh });
           const newAccess = res.data.access;
 
-          set({ accessToken: newAccess, isAuthenticated: true });
+          set({ accessToken: newAccess, isAuthenticated: true, isRefreshing: false });
           return newAccess;
         } catch (err) {
           console.error("Token refresh failed:", err);
+          set({ isRefreshing: false });
           get().logout();
           return null;
         }
       },
     }),
 
-    { name: "auth-storage" }
+    { 
+      name: "auth-storage",
+      onRehydrateStorage: () => (state) => {
+        state.setHasHydrated(true);
+      }
+    }
   )
 );

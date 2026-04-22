@@ -95,25 +95,33 @@
 .ae-submit {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 18px;
-  border: 0;
-  border-radius: 10px;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #fff;
-  background: #7c3aed; /* purple */
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   cursor: pointer;
-  box-shadow: 0 8px 16px rgba(124, 58, 237, 0.32);
-  transition: transform 0.06s ease, opacity 0.2s ease, box-shadow 0.15s ease;
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
 }
 
 .ae-submit:hover {
-  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.38);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
 }
 
 .ae-submit:active {
-  transform: translateY(1px);
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
 }
 
 .ae-submit:disabled {

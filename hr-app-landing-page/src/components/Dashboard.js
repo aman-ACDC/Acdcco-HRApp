@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
+import ManualModal from './ManualModal';
 
 const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [filterTitle, setFilterTitle] = useState('All');
+  
+  // Modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
+
+  const filteredEmployees = filterTitle === 'All' 
+    ? employees 
+    : employees.filter(emp => emp.title === filterTitle);
+
+  // Get unique titles for the filter dropdown
+  const uniqueTitles = ['All', ...new Set(employees.map(emp => emp.title).filter(Boolean))];
 
   const handleEdit = (employee) => {
     setEditingId(employee.name);
@@ -27,9 +40,16 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
     }));
   };
 
-  const handleDelete = (employeeName) => {
-    if (window.confirm(`Are you sure you want to delete ${employeeName}?`)) {
-      onDeleteEmployee(employeeName);
+  const handleDeleteClick = (employeeName) => {
+    setEmployeeToDelete(employeeName);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (employeeToDelete) {
+      onDeleteEmployee(employeeToDelete);
+      setIsDeleteModalOpen(false);
+      setEmployeeToDelete(null);
     }
   };
 
@@ -38,9 +58,21 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
       <div className="container">
         <div className="section">
           <h2 className="section-title">Employee Dashboard</h2>
-          <p className="section-subtitle">Manage and edit employee information</p>
           
           <div className="dashboard-table-container">
+            <div className="dashboard-filters">
+              <label className="filter-label">Filter by Title:</label>
+              <select 
+                className="filter-select" 
+                value={filterTitle}
+                onChange={(e) => setFilterTitle(e.target.value)}
+              >
+                {uniqueTitles.map(title => (
+                  <option key={title} value={title}>{title}</option>
+                ))}
+              </select>
+            </div>
+
             <table className="dashboard-table">
               <thead>
                 <tr>
@@ -48,14 +80,14 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                   <th>Title</th>
                   <th>Department</th>
                   <th>Location</th>
-                  <th>Status</th>
+                  {/* <th>Status</th> */}
                   <th>Start Date</th>
                   <th>Reports To</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {employees.map((employee, index) => (
+                {filteredEmployees.map((employee, index) => (
                   <tr key={index} className={editingId === employee.name ? 'editing' : ''}>
                     <td>
                       {editingId === employee.name ? (
@@ -116,7 +148,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                         <span className="location-badge">{employee.location}</span>
                       )}
                     </td>
-                    <td>
+                                        {/* <td>
                       {editingId === employee.name ? (
                         <select
                           value={editForm.status || ''}
@@ -131,7 +163,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                           {employee.status}
                         </span>
                       )}
-                    </td>
+                    </td> */}
                     <td>
                       {editingId === employee.name ? (
                         <input
@@ -184,7 +216,7 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
                             ✏️
                           </button>
                           <button 
-                            onClick={() => handleDelete(employee.name)}
+                            onClick={() => handleDeleteClick(employee.name)}
                             className="btn-delete"
                             title="Delete employee"
                           >
@@ -200,6 +232,19 @@ const Dashboard = ({ employees, onUpdateEmployee, onDeleteEmployee }) => {
           </div>
         </div>
       </div>
+
+      <ManualModal
+        isOpen={isDeleteModalOpen}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setEmployeeToDelete(null);
+        }}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete ${employeeToDelete}? This action cannot be undone.`}
+        confirmText="Delete"
+        type="danger"
+      />
     </div>
   );
 };

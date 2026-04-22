@@ -1,45 +1,88 @@
 import client from "./client";
 
-export async function createPerson(payload) {
-  // normalize time_commitment to a number or null
-  const tcRaw = payload.time_commitment;
-  const timeCommitment =
-    tcRaw === "" || tcRaw === undefined || tcRaw === null
-      ? null
-      : Number.parseInt(tcRaw, 10);
+/**
+ * Create new employee (Person)
+ * Sends fields exactly as backend expects
+ */
+export const createPerson = async (payload, token) => {
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    : {
+        "Content-Type": "application/json",
+      };
 
-  const body = {
-    full_name: payload.name || "",
-    // position can come from your select as "position" or from older code as "title"
-    position: payload.position || payload.title || "",
-    department: payload.department || "",
-    status:
-      payload.status === "On leave"
-        ? "on_leave"
-        : payload.status === "Employee"
-        ? "active"
-        : (payload.status || "inactive").toLowerCase(),
-    start_date: payload.startDate || null,
-    timezone: payload.location || null,
-    acdc_email: payload.acdc_email || null,
-    personal_email: payload.personal_email || null,
-    phone: payload.phone || null,
-    subteam: payload.subteam || null,
+  const res = await client.post("/employees/", payload, { headers });
 
-    // 👇 new fields
-    time_commitment: timeCommitment,
-    reports_to: payload.reports_to || "",
-  };
+  return res.data;
+};
 
-  const { data } = await client.post("/employees/", body);
-  return data; // returns the created Person from backend
-}
+/**
+ * Update employee
+ */
+export const updatePerson = async (id, payload, token) => {
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    : {
+        "Content-Type": "application/json",
+      };
 
-export async function updatePerson(id, payload) {
-  const { data } = await client.patch(`/employees/${id}/`, payload);
-  return data;
-}
+  const res = await client.patch(`/employees/${id}/`, payload, { headers });
 
-export async function deletePerson(id) {
-  await client.delete(`/employees/${id}/`);
-}
+  return res.data;
+};
+
+/**
+ * Delete employee
+ */
+export const deletePerson = async (id, token) => {
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`,
+      }
+    : undefined;
+
+  const res = await client.delete(`/employees/${id}/`, { headers });
+
+  return res.data;
+};
+
+/**
+ * Fetch HR employees
+ */
+export const fetchHRPeople = async () => {
+  const res = await client.get("/employees/filter_employees/", {
+    params: { department: "Human Resources" },
+  });
+
+  const data = res.data?.results ?? res.data;
+
+  return Array.isArray(data) ? data : data?.results ?? [];
+};
+
+/**
+ * Setup portal account
+ */
+export const setPortalAccount = async (personId, portalData, token) => {
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    : {
+        "Content-Type": "application/json",
+      };
+
+  const res = await client.patch(
+    `/employees/${personId}/set_portal_account/`,
+    portalData,
+    { headers }
+  );
+
+  return res.data;
+};
